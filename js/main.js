@@ -1,35 +1,57 @@
-const presentOrderBtn = document.querySelector('.present__order-btn');
-const pageOverlayModal = document.querySelector('.page__overlay_modal');
-const modalClose = document.querySelector('.modal__close');
-const pageOverlay = document.querySelector('.page__overlay');
+{
+  // Модальное окно
+  const presentOrderBtn = document.querySelector('.present__order-btn');
+  const pageOverlayModal = document.querySelector('.page__overlay_modal');
+  const modalClose = document.querySelector('.modal__close');
 
-const handlerModal = (openBtn, modal, openSelector, closeBtn, speed) => {
-  let opacity = 0;
+  const handlerModal = (openBtn, modal, openSelector, closeBtn, speed) => {
+    let opacity = 0;
 
-  openBtn.addEventListener('click', () => {
-    modal.style.opacity = opacity;
-
-    modal.classList.add(openSelector);
-
-    const timer = setInterval(() => {
-      opacity += 0.05;
+    openBtn.addEventListener('click', () => {
       modal.style.opacity = opacity;
-      if (opacity >= 1) clearInterval(timer);
-    }, speed);
-  });
 
-  closeBtn.addEventListener('click', () => {
-    modal.style.opacity = opacity;
+      modal.classList.add(openSelector);
 
-    const timer = setInterval(() => {
-      opacity -= 0.05;
+      const timer = setInterval(() => {
+        opacity += 0.05;
+        modal.style.opacity = opacity;
+        if (opacity >= 1) clearInterval(timer);
+      }, speed);
+    });
+
+    closeBtn.addEventListener('click', () => {
       modal.style.opacity = opacity;
-      if (opacity <= 0) {
-        clearInterval(timer);
-        modal.classList.remove(openSelector);
+
+      const timer = setInterval(() => {
+        opacity -= 0.05;
+        modal.style.opacity = opacity;
+        if (opacity <= 0) {
+          clearInterval(timer);
+          modal.classList.remove(openSelector);
+        }
+      }, speed);
+    });
+  };
+
+  handlerModal(presentOrderBtn, pageOverlayModal, 'page__overlay_modal_open', modalClose, 6);
+}
+
+{
+  // Бургер-меню
+  const headerContactsBurger = document.querySelector('.header__contacts-burger');
+  const headerContacts = document.querySelector('.header__contacts');
+
+  const handlerBurger = (openBtn, menu, openSelector) => {
+    openBtn.addEventListener('click', () => {
+      if (menu.classList.contains(openSelector)) {
+        menu.style.height = '';
+        menu.classList.remove(openSelector);
+      } else {
+        menu.style.height = menu.scrollHeight + 'px';
+        menu.classList.add(openSelector);
       }
-    }, speed);
-  });
-};
+    });
+  };
 
-handlerModal(presentOrderBtn, pageOverlayModal, 'page__overlay_modal_open', modalClose, 6);
+  handlerBurger(headerContactsBurger, headerContacts, 'header__contacts_open');
+}
