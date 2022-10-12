@@ -15,7 +15,7 @@ const disableScroll = () => {
 };
 
 const enableScroll = () => {
-  document.body.style.cssText = '';
+  document.body.style.cssText = 'position: relative';
   window.scroll({ top: document.body.scrollPosition });
 };
 
