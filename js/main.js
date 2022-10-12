@@ -1,3 +1,24 @@
+const disableScroll = () => {
+  const widthScroll = window.innerWidth - document.body.offsetWidth;
+
+  document.body.scrollPosition = window.scrollY;
+
+  document.body.style.cssText = `
+		overflow: hidden;
+		position: fixed;
+		top: -${document.body.scrollPosition}px;
+		left: 0;
+		height: 100vh;
+		width: 100vw;
+		padding-right: ${widthScroll}px;
+	`;
+};
+
+const enableScroll = () => {
+  document.body.style.cssText = '';
+  window.scroll({ top: document.body.scrollPosition });
+};
+
 {
   // Модальное окно
   const presentOrderBtn = document.querySelector('.present__order-btn');
@@ -7,7 +28,8 @@
   const handlerModal = (openBtn, modal, openSelector, closeBtn, speed) => {
     let opacity = 0;
 
-    openBtn.addEventListener('click', () => {
+    const openModal = () => {
+      disableScroll();
       modal.style.opacity = opacity;
 
       modal.classList.add(openSelector);
@@ -17,9 +39,10 @@
         modal.style.opacity = opacity;
         if (opacity >= 1) clearInterval(timer);
       }, speed);
-    });
+    };
 
-    closeBtn.addEventListener('click', () => {
+    const closeModal = () => {
+      enableScroll();
       modal.style.opacity = opacity;
 
       const timer = setInterval(() => {
@@ -30,6 +53,14 @@
           modal.classList.remove(openSelector);
         }
       }, speed);
+    };
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
     });
   };
 
