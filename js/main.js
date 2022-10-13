@@ -86,3 +86,48 @@ const enableScroll = () => {
 
   handlerBurger(headerContactsBurger, headerContacts, 'header__contacts_open');
 }
+
+{
+  // Галерея
+
+  const portfolioList = document.querySelector('.portfolio__list');
+  const pageOverlay = document.createElement('div');
+  pageOverlay.classList.add('page__overlay');
+
+  portfolioList.addEventListener('click', (event) => {
+    const card = event.target.closest('.card');
+
+    if (card) {
+      disableScroll();
+      document.body.append(pageOverlay);
+      const title = card.querySelector('.card__client');
+
+      const picture = document.createElement('picture');
+
+      picture.style.cssText = `
+				position: absolute;
+				top: 20px;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 90vw;
+				max-width: 1440px;
+			`;
+
+      picture.innerHTML = `
+				<source srcset="${card.dataset.fullImage}.avif" type="image/avif">
+				<source srcset="${card.dataset.fullImage}.webp" type="image/webp">
+				<img src="${card.dataset.fullImage}.jpg" alt="${title.textContent}" >
+			`;
+
+      pageOverlay.append(picture);
+
+      console.log(card.dataset.fullImage + '.jpg');
+    }
+  });
+
+  pageOverlay.addEventListener('click', () => {
+    enableScroll();
+    pageOverlay.remove();
+    pageOverlay.textContent = '';
+  });
+}
