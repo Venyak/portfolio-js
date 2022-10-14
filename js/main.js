@@ -19,8 +19,8 @@ const enableScroll = () => {
   window.scroll({ top: document.body.scrollPosition });
 };
 
+// Модальное окно
 {
-  // Модальное окно
   const presentOrderBtn = document.querySelector('.present__order-btn');
   const pageOverlayModal = document.querySelector('.page__overlay_modal');
   const modalClose = document.querySelector('.modal__close');
@@ -67,8 +67,8 @@ const enableScroll = () => {
   handlerModal(presentOrderBtn, pageOverlayModal, 'page__overlay_modal_open', modalClose, 6);
 }
 
+// Бургер-меню
 {
-  // Бургер-меню
   const headerContactsBurger = document.querySelector('.header__contacts-burger');
   const headerContacts = document.querySelector('.header__contacts');
 
@@ -87,9 +87,8 @@ const enableScroll = () => {
   handlerBurger(headerContactsBurger, headerContacts, 'header__contacts_open');
 }
 
+// Галерея
 {
-  // Галерея
-
   const portfolioList = document.querySelector('.portfolio__list');
   const pageOverlay = document.createElement('div');
   pageOverlay.classList.add('page__overlay');
@@ -130,4 +129,62 @@ const enableScroll = () => {
     pageOverlay.remove();
     pageOverlay.textContent = '';
   });
+}
+
+// Создание карточек на основе данных из JSON
+{
+  const COUNT_CARD = 2;
+
+  const portfolioList = document.querySelector('.portfolio__list');
+  const portfolioAdd = document.querySelector('.portfolio__add');
+
+  const getData = () =>
+    fetch('db.json')
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw `Что-то пошло не так, попробуйте позже. Ошибка: ${response.status}`;
+        }
+      })
+      .catch((err) => console.error(err));
+
+  const createStore = async () => {
+    const data = await getData();
+    return {
+      data,
+      counter: 0,
+      count: COUNT_CARD,
+      get length() {
+        return this.data.length;
+      },
+      get cardData() {
+        const renderData = this.data.slice(this.counter, this.counter + this.count);
+        this.counter += renderData.length;
+        return renderData;
+      },
+    };
+  };
+
+  const renderCard = (data) => {
+    const cards = data.map(() => {
+      const li = document.createElement('li');
+      return li;
+    });
+
+    console.log(cards);
+  };
+
+  const intitPortfolio = async () => {
+    const store = await createStore();
+
+    portfolioAdd.addEventListener('click', () => {
+      renderCard(store.cardData);
+      if (store.length === store.counter) {
+        portfolioAdd.remove();
+      }
+    });
+  };
+
+  intitPortfolio();
 }
