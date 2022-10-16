@@ -133,7 +133,7 @@ const enableScroll = () => {
 
 // Создание карточек на основе данных из JSON
 {
-  const COUNT_CARD = 2;
+  const COUNT_CARD = 4;
 
   const portfolioList = document.querySelector('.portfolio__list');
   const portfolioAdd = document.querySelector('.portfolio__add');
@@ -167,17 +167,35 @@ const enableScroll = () => {
   };
 
   const renderCard = (data) => {
-    const cards = data.map(() => {
+    const cards = data.map(({ preview, image, client, year, type }) => {
       const li = document.createElement('li');
+      li.classList.add('portfolio__item');
+      li.innerHTML = `
+				<article class="card" tabindex="0" role="button" aria-label="открыть макет" data-full-image="${image}">
+				<picture class="card__picture">
+					<source srcset="${preview}.avif" type="image/avif">
+					<source srcset="${preview}.webp" type="image/webp">
+					<img src="${preview}.jpg" alt="превью ${client}" width="166" height="103">
+				</picture>
+
+				<p class="card__data">
+					<span class="card__client">Клиент: ${client}</span>
+					<time class="card__date" datetime="${year}">год: ${year}</time>
+				</p>
+
+				<h3 class="card__title">${type}</h3>
+				</article>
+			`;
       return li;
     });
 
-    console.log(cards);
+    portfolioList.append(...cards);
   };
 
   const intitPortfolio = async () => {
     const store = await createStore();
 
+    renderCard(store.cardData);
     portfolioAdd.addEventListener('click', () => {
       renderCard(store.cardData);
       if (store.length === store.counter) {
